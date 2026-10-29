@@ -10,14 +10,13 @@ Aplicativo mobile para gerenciamento e controle de estoque, desenvolvido com Rea
 <img src="img/TelaInicial.png" alt="Tela inicial do EstoqueSenac" width="100">
 
 ### Cadastro e consulta de produtos
-<img src="Captura de tela 2026-10-27 202024.png" alt="Tela inicial do EstoqueSenac" width="100">
+<img src="img/Captura de tela 2026-10-27 202024.png" alt="Tela inicial do EstoqueSenac" width="100">
 
 ### Movimentações de estoque
-<img src="image-1.png" alt="Tela inicial do EstoqueSenac" width="100">
-
+<img src="img/image-1.png" alt="Tela inicial do EstoqueSenac" width="100">
 
 ### Histórico de movimentações
-<img src="image.png" alt="Tela inicial do EstoqueSenac" width="100">
+<img src="img/image.png" alt="Tela inicial do EstoqueSenac" width="100">
 
 ## 🚀 Como executar o projeto
 
