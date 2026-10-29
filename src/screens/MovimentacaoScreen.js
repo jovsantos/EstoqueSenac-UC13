@@ -14,7 +14,8 @@ import {
   listarProdutos,
   registrarMovimentacao,
 } from "../database/database";
-import Movimentacao from "../models/Movimentacao";
+import EntradaEstoque from "../models/EntradaEstoque";
+import SaidaEstoque from "../models/SaidaEstoque";
 
 
 export default function MovimentacaoScreen({ navigation }) {
@@ -58,14 +59,12 @@ export default function MovimentacaoScreen({ navigation }) {
         return;
       }
 
-      const movimentacao = new Movimentacao(
-        produtoId,
-        tipo,
-        Number(quantidade)
-      );
+     const movimentacao =
+  tipo === "entrada"
+    ? new EntradaEstoque(produtoId, Number(quantidade))
+    : new SaidaEstoque(produtoId, Number(quantidade));
 
       movimentacao.validar();
-
       setSalvando(true);
      await registrarMovimentacao(movimentacao);
 

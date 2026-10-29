@@ -1,13 +1,17 @@
 
 export default class Movimentacao {
   #produtoId;
-  #tipo;
   #quantidade;
   #data;
 
-  constructor(produtoId, tipo, quantidade) {
+  constructor(produtoId, quantidade) {
+    if (new.target === Movimentacao) {
+      throw new Error(
+        "Movimentacao é uma classe base e não pode ser instanciada diretamente."
+      );
+    }
+
     this.#produtoId = produtoId;
-    this.#tipo = tipo;
     this.#quantidade = quantidade;
     this.#data = new Date().toISOString();
   }
@@ -17,21 +21,29 @@ export default class Movimentacao {
       throw new Error("Produto inválido.");
     }
 
-    if (!["entrada", "saida"].includes(this.#tipo)) {
-      throw new Error("Tipo deve ser entrada ou saida.");
-    }
-
     if (!Number.isInteger(this.#quantidade) || this.#quantidade <= 0) {
-      throw new Error("A quantidade deve ser um inteiro maior que zero.");
+      throw new Error(
+        "A quantidade deve ser um inteiro maior que zero."
+      );
     }
 
     return true;
   }
 
+  get tipo() {
+    throw new Error("O método tipo deve ser implementado pela classe filha.");
+  }
+
+  aplicar(quantidadeAtual) {
+    throw new Error(
+      "O método aplicar deve ser implementado pela classe filha."
+    );
+  }
+
   getDados() {
     return {
       produtoId: this.#produtoId,
-      tipo: this.#tipo,
+      tipo: this.tipo,
       quantidade: this.#quantidade,
       data: this.#data,
     };

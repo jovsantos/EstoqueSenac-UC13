@@ -21,6 +21,16 @@ export default function HomeScreen({ navigation }) {
   const [produtos, setProdutos] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [carregando, setCarregando] = useState(true);
+  const LIMITE_ESTOQUE_BAIXO = 5;
+  const [mostrarApenasEstoqueBaixo, setMostrarApenasEstoqueBaixo] =
+  useState(false);
+
+  const produtosExibidos = mostrarApenasEstoqueBaixo
+  ? produtos.filter(
+      (produto) =>
+        Number(produto.quantidade) <= LIMITE_ESTOQUE_BAIXO
+    )
+  : produtos;
 
   const carregarProdutos = useCallback(async () => {
     try {
@@ -88,6 +98,14 @@ export default function HomeScreen({ navigation }) {
           </Text>
         </View>
 
+          {Number(item.quantidade) <= LIMITE_ESTOQUE_BAIXO && (
+      <View style={styles.alertaEstoqueBaixo}>
+        <Text style={styles.textoAlertaEstoqueBaixo}>
+            ⚠ Estoque baixo — reabastecer
+        </Text>
+      </View>
+)}
+
         <Text style={styles.detalhe}>Código: {item.codigo}</Text>
         <Text style={styles.detalhe}>Categoria: {item.categoria}</Text>
        <Text style={styles.preco}>
@@ -127,6 +145,29 @@ export default function HomeScreen({ navigation }) {
         autoCapitalize="none"
       />
 
+    <Pressable
+  style={
+    mostrarApenasEstoqueBaixo
+      ? styles.botaoFiltroAtivo
+      : styles.botaoFiltro
+  }
+  onPress={() =>
+    setMostrarApenasEstoqueBaixo(!mostrarApenasEstoqueBaixo)
+  }
+>
+  <Text
+    style={
+      mostrarApenasEstoqueBaixo
+        ? styles.textoFiltroAtivo
+        : styles.textoFiltro
+    }
+  >
+    {mostrarApenasEstoqueBaixo
+      ? "✓ Exibindo estoque baixo — mostrar todos"
+      : "⚠ Mostrar somente estoque baixo"}
+  </Text>
+</Pressable>
+
       <Pressable
         style={styles.botao}
         onPress={() => navigation.navigate("CadastroProduto")}
@@ -161,7 +202,7 @@ export default function HomeScreen({ navigation }) {
         />
       ) : (
         <FlatList
-          data={produtos}
+          data={produtosExibidos}
           keyExtractor={(item) => String(item.id)}
           renderItem={renderizarProduto}
           contentContainerStyle={styles.lista}
@@ -304,5 +345,45 @@ textoBotaoMovimentacao: {
     fontSize: 15,
   },
 
+  alertaEstoqueBaixo: {
+  backgroundColor: "#FFF0D9",
+  padding: 8,
+  borderRadius: 8,
+  marginTop: 10,
+  borderWidth: 1,
+  borderColor: "#F2C078",
+},
+textoAlertaEstoqueBaixo: {
+  color: "#9A5800",
+  fontSize: 13,
+  fontWeight: "bold",
+},
+
+botaoFiltro: {
+  backgroundColor: "#FFF0D9",
+  padding: 12,
+  borderRadius: 10,
+  alignItems: "center",
+  marginBottom: 14,
+  borderWidth: 1,
+  borderColor: "#F2C078",
+},
+textoFiltro: {
+  color: "#9A5800",
+  fontWeight: "bold",
+  fontSize: 14,
+},
+botaoFiltroAtivo: {
+  backgroundColor: "#176B45",
+  padding: 12,
+  borderRadius: 10,
+  alignItems: "center",
+  marginBottom: 14,
+},
+textoFiltroAtivo: {
+  color: "#FFFFFF",
+  fontWeight: "bold",
+  fontSize: 14,
+},
 
 });

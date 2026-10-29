@@ -160,6 +160,7 @@ export async function excluirProduto(id) {
 }
 
 
+
 export async function registrarMovimentacao(movimentacao) {
   const banco = await conectarBanco();
   const dados = movimentacao.getDados();
@@ -180,29 +181,24 @@ export async function registrarMovimentacao(movimentacao) {
       const quantidadeAtual = Number(produto.quantidade);
       const quantidadeMovimentada = Number(dados.quantidade);
 
-      if (dados.tipo === "saida" && quantidadeMovimentada > quantidadeAtual) {
-        throw new Error(
-          `Estoque insuficiente. Quantidade disponível: ${quantidadeAtual} unidade(s).`
-        );
-      }
-
-      const novaQuantidade =
-        dados.tipo === "entrada"
-          ? quantidadeAtual + quantidadeMovimentada
-          : quantidadeAtual - quantidadeMovimentada;
+      // Polimorfismo: cada classe calcula o estoque de forma diferente.
+      const novaQuantidade = movimentacao.aplicar(quantidadeAtual);
 
       await transacao.runAsync(
         "UPDATE produtos SET quantidade = ? WHERE id = ?",
         [novaQuantidade, dados.produtoId]
       );
 
-      const dataAtual = new Date().toISOString();
-
       await transacao.runAsync(
         `INSERT INTO movimentacoes
           (produto_id, tipo, quantidade, data)
          VALUES (?, ?, ?, ?)`,
-        [dados.produtoId, dados.tipo, quantidadeMovimentada, dataAtual]
+        [
+          dados.produtoId,
+          dados.tipo,
+          quantidadeMovimentada,
+          dados.data,
+        ]
       );
     });
   } catch (erro) {
